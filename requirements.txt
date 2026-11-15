@@ -1,0 +1,2 @@
+# Core runtime: sufficient for UI, timers, mascots and weather.
+PyQt6>=6.6,<7
