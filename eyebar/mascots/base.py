@@ -36,7 +36,12 @@ class MascotState:
     bob: float = 0.0  # подпрыгивание при радости, логических пикселей
     music_accessory: str = "off"  # off | earbuds | headphones
     temp_text: str = "--°"  # температура для вышивки / шильдика на персонаже
+    sleep_phase: float = 0.0  # v1.1: 0..1 smooth head dip, only the cat uses it
+    yawn: float = 0.0  # 0..1 mouth opening
+    stretch: float = 0.0  # 0..1 paws stretch; no change of mascot size
     t: float = 0.0  # часы анимации, секунды
+    outline_color: str = "#38BDF8"  # optional renderer accent override
+    backlight: float = 1.0  # 0..1, optional renderer backlight brightness
 
 
 class Mascot(ABC):

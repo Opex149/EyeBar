@@ -63,6 +63,29 @@ class TestQtGui(unittest.TestCase):
         self.assertEqual(self.ctx.settings_dialog.glass_mode.currentData(), 'liquid')
         self.assertTrue(self.ctx.settings_dialog.isVisible())
 
+    def test_v11_night_dimming_is_reversible(self):
+        self.assertFalse(self.ctx.night.active)
+        self.ctx.toggle_night()
+        self.assertTrue(self.ctx.night.active)
+        self.assertTrue(self.ctx.minibar.night_shade.enabled)
+        self.assertTrue(self.ctx.standby._night)
+        self.ctx.toggle_night()
+        self.assertFalse(self.ctx.night.active)
+        self.assertFalse(self.ctx.minibar.night_shade.enabled)
+        self.assertFalse(self.ctx.standby._night)
+
+    def test_v11_alarm_editor_persists(self):
+        self.ctx.open_alarms()
+        self.qt_app.processEvents()
+        dialog = self.ctx.alarm_dialog
+        self.assertIsNotNone(dialog)
+        self.assertTrue(dialog.isVisible())
+        dialog.time_edit.setTime(__import__('PyQt6.QtCore', fromlist=['QTime']).QTime(7, 30))
+        dialog._save()
+        self.assertEqual(self.ctx.alarms.alarms[-1]['time'], '07:30')
+        self.assertEqual(self.ctx.config.get('alarms')[-1]['time'], '07:30')
+        dialog.close()
+
     def test_show_bar_exits_standby(self):
         self.ctx.enter_standby()
         self.assertTrue(self.ctx.standby.isVisible())

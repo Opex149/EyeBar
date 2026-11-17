@@ -1,0 +1,1548 @@
+{
+  "schema_version": 1,
+  "started_utc": "2026-11-17T09:17:38.275793+00:00",
+  "scenario": "disabled",
+  "requested_duration_seconds": 30.0,
+  "warmup_seconds": 2.0,
+  "host": {
+    "system": "Linux",
+    "release": "6.18.57",
+    "machine": "x86_64",
+    "python": "3.12.14",
+    "qt": "6.12.0",
+    "pyqt": "6.12.1",
+    "qt_platform": "offscreen",
+    "logical_cpu_count": 3,
+    "screens": [
+      {
+        "width": 800,
+        "height": 800,
+        "device_pixel_ratio": 1.0,
+        "logical_dpi": 96.0
+      }
+    ]
+  },
+  "scope": {
+    "ui_only": true,
+    "real_controller_and_stylesheet": true,
+    "weather_refresh_disabled": true,
+    "http_transport_blocked": true,
+    "windows_media_backend_disabled": true,
+    "media_polling_disabled": true,
+    "global_hotkey_registration_disabled": true,
+    "temporary_user_config": true,
+    "single_core_cpu_percent": true,
+    "sample_interval_seconds": 1.0,
+    "switch_action_interval_seconds": null,
+    "limitations": [
+      "Host-specific UI process measurements, including profiling overhead.",
+      "No external weather/media workload, audio or real global hotkeys.",
+      "Qt inventory excludes internal timers and unparented objects.",
+      "Short profiling cannot establish absence of long-term memory leaks.",
+      "Linux/offscreen/Xvfb measurements do not validate Windows performance or DPI."
+    ]
+  },
+  "samples": [
+    {
+      "elapsed_seconds": 8.245199978773599e-05,
+      "process_cpu_seconds": 7.856700000000161e-05,
+      "interval_cpu_percent_one_core": null,
+      "memory": {
+        "bytes": 66449408,
+        "kind": "current_rss",
+        "source": "/proc/self/statm"
+      },
+      "qt": {
+        "controller_services": {
+          "class": "Controller",
+          "visible": null,
+          "qtimers_total": 9,
+          "qtimers_active": 4,
+          "active_timer_intervals_ms": {
+            "1000": 1,
+            "30000": 1,
+            "5000": 1,
+            "900000": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "minibar": {
+          "class": "MiniBar",
+          "visible": true,
+          "qtimers_total": 11,
+          "qtimers_active": 1,
+          "active_timer_intervals_ms": {
+            "21685": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "standby": {
+          "class": "StandbyWindow",
+          "visible": false,
+          "qtimers_total": 9,
+          "qtimers_active": 0,
+          "active_timer_intervals_ms": {},
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        }
+      }
+    },
+    {
+      "elapsed_seconds": 1.001295422999874,
+      "process_cpu_seconds": 0.0012270939999999841,
+      "interval_cpu_percent_one_core": 0.11471355578351607,
+      "memory": {
+        "bytes": 66457600,
+        "kind": "current_rss",
+        "source": "/proc/self/statm"
+      },
+      "qt": {
+        "controller_services": {
+          "class": "Controller",
+          "visible": null,
+          "qtimers_total": 9,
+          "qtimers_active": 4,
+          "active_timer_intervals_ms": {
+            "1000": 1,
+            "30000": 1,
+            "5000": 1,
+            "900000": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "minibar": {
+          "class": "MiniBar",
+          "visible": true,
+          "qtimers_total": 11,
+          "qtimers_active": 1,
+          "active_timer_intervals_ms": {
+            "21685": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "standby": {
+          "class": "StandbyWindow",
+          "visible": false,
+          "qtimers_total": 9,
+          "qtimers_active": 0,
+          "active_timer_intervals_ms": {},
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        }
+      }
+    },
+    {
+      "elapsed_seconds": 2.001984984999808,
+      "process_cpu_seconds": 0.002840342999999995,
+      "interval_cpu_percent_one_core": 0.16121373313576318,
+      "memory": {
+        "bytes": 66457600,
+        "kind": "current_rss",
+        "source": "/proc/self/statm"
+      },
+      "qt": {
+        "controller_services": {
+          "class": "Controller",
+          "visible": null,
+          "qtimers_total": 9,
+          "qtimers_active": 4,
+          "active_timer_intervals_ms": {
+            "1000": 1,
+            "30000": 1,
+            "5000": 1,
+            "900000": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "minibar": {
+          "class": "MiniBar",
+          "visible": true,
+          "qtimers_total": 11,
+          "qtimers_active": 1,
+          "active_timer_intervals_ms": {
+            "21685": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "standby": {
+          "class": "StandbyWindow",
+          "visible": false,
+          "qtimers_total": 9,
+          "qtimers_active": 0,
+          "active_timer_intervals_ms": {},
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        }
+      }
+    },
+    {
+      "elapsed_seconds": 3.0019446819999303,
+      "process_cpu_seconds": 0.0037385589999999747,
+      "interval_cpu_percent_one_core": 0.08982522022583773,
+      "memory": {
+        "bytes": 66457600,
+        "kind": "current_rss",
+        "source": "/proc/self/statm"
+      },
+      "qt": {
+        "controller_services": {
+          "class": "Controller",
+          "visible": null,
+          "qtimers_total": 9,
+          "qtimers_active": 4,
+          "active_timer_intervals_ms": {
+            "1000": 1,
+            "30000": 1,
+            "5000": 1,
+            "900000": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "minibar": {
+          "class": "MiniBar",
+          "visible": true,
+          "qtimers_total": 11,
+          "qtimers_active": 1,
+          "active_timer_intervals_ms": {
+            "21685": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "standby": {
+          "class": "StandbyWindow",
+          "visible": false,
+          "qtimers_total": 9,
+          "qtimers_active": 0,
+          "active_timer_intervals_ms": {},
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        }
+      }
+    },
+    {
+      "elapsed_seconds": 4.001900351999893,
+      "process_cpu_seconds": 0.005562629999999985,
+      "interval_cpu_percent_one_core": 0.1824151864652238,
+      "memory": {
+        "bytes": 66457600,
+        "kind": "current_rss",
+        "source": "/proc/self/statm"
+      },
+      "qt": {
+        "controller_services": {
+          "class": "Controller",
+          "visible": null,
+          "qtimers_total": 9,
+          "qtimers_active": 4,
+          "active_timer_intervals_ms": {
+            "1000": 1,
+            "30000": 1,
+            "5000": 1,
+            "900000": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "minibar": {
+          "class": "MiniBar",
+          "visible": true,
+          "qtimers_total": 11,
+          "qtimers_active": 1,
+          "active_timer_intervals_ms": {
+            "21685": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "standby": {
+          "class": "StandbyWindow",
+          "visible": false,
+          "qtimers_total": 9,
+          "qtimers_active": 0,
+          "active_timer_intervals_ms": {},
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        }
+      }
+    },
+    {
+      "elapsed_seconds": 5.001794431999997,
+      "process_cpu_seconds": 0.006408206,
+      "interval_cpu_percent_one_core": 0.08456655728974082,
+      "memory": {
+        "bytes": 66465792,
+        "kind": "current_rss",
+        "source": "/proc/self/statm"
+      },
+      "qt": {
+        "controller_services": {
+          "class": "Controller",
+          "visible": null,
+          "qtimers_total": 9,
+          "qtimers_active": 4,
+          "active_timer_intervals_ms": {
+            "1000": 1,
+            "30000": 1,
+            "5000": 1,
+            "900000": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "minibar": {
+          "class": "MiniBar",
+          "visible": true,
+          "qtimers_total": 11,
+          "qtimers_active": 1,
+          "active_timer_intervals_ms": {
+            "21685": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "standby": {
+          "class": "StandbyWindow",
+          "visible": false,
+          "qtimers_total": 9,
+          "qtimers_active": 0,
+          "active_timer_intervals_ms": {},
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        }
+      }
+    },
+    {
+      "elapsed_seconds": 6.001644428999953,
+      "process_cpu_seconds": 0.007164660999999989,
+      "interval_cpu_percent_one_core": 0.07565684875428597,
+      "memory": {
+        "bytes": 66465792,
+        "kind": "current_rss",
+        "source": "/proc/self/statm"
+      },
+      "qt": {
+        "controller_services": {
+          "class": "Controller",
+          "visible": null,
+          "qtimers_total": 9,
+          "qtimers_active": 4,
+          "active_timer_intervals_ms": {
+            "1000": 1,
+            "30000": 1,
+            "5000": 1,
+            "900000": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "minibar": {
+          "class": "MiniBar",
+          "visible": true,
+          "qtimers_total": 11,
+          "qtimers_active": 1,
+          "active_timer_intervals_ms": {
+            "21685": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "standby": {
+          "class": "StandbyWindow",
+          "visible": false,
+          "qtimers_total": 9,
+          "qtimers_active": 0,
+          "active_timer_intervals_ms": {},
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        }
+      }
+    },
+    {
+      "elapsed_seconds": 7.001385994999964,
+      "process_cpu_seconds": 0.007864131999999996,
+      "interval_cpu_percent_one_core": 0.0699651813816851,
+      "memory": {
+        "bytes": 66465792,
+        "kind": "current_rss",
+        "source": "/proc/self/statm"
+      },
+      "qt": {
+        "controller_services": {
+          "class": "Controller",
+          "visible": null,
+          "qtimers_total": 9,
+          "qtimers_active": 4,
+          "active_timer_intervals_ms": {
+            "1000": 1,
+            "30000": 1,
+            "5000": 1,
+            "900000": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "minibar": {
+          "class": "MiniBar",
+          "visible": true,
+          "qtimers_total": 11,
+          "qtimers_active": 1,
+          "active_timer_intervals_ms": {
+            "21685": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "standby": {
+          "class": "StandbyWindow",
+          "visible": false,
+          "qtimers_total": 9,
+          "qtimers_active": 0,
+          "active_timer_intervals_ms": {},
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        }
+      }
+    },
+    {
+      "elapsed_seconds": 8.00125724999998,
+      "process_cpu_seconds": 0.008660526000000002,
+      "interval_cpu_percent_one_core": 0.0796496544947672,
+      "memory": {
+        "bytes": 66465792,
+        "kind": "current_rss",
+        "source": "/proc/self/statm"
+      },
+      "qt": {
+        "controller_services": {
+          "class": "Controller",
+          "visible": null,
+          "qtimers_total": 9,
+          "qtimers_active": 4,
+          "active_timer_intervals_ms": {
+            "1000": 1,
+            "30000": 1,
+            "5000": 1,
+            "900000": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "minibar": {
+          "class": "MiniBar",
+          "visible": true,
+          "qtimers_total": 11,
+          "qtimers_active": 1,
+          "active_timer_intervals_ms": {
+            "21685": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "standby": {
+          "class": "StandbyWindow",
+          "visible": false,
+          "qtimers_total": 9,
+          "qtimers_active": 0,
+          "active_timer_intervals_ms": {},
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        }
+      }
+    },
+    {
+      "elapsed_seconds": 9.002121237999972,
+      "process_cpu_seconds": 0.009460365999999998,
+      "interval_cpu_percent_one_core": 0.07991495443834498,
+      "memory": {
+        "bytes": 66469888,
+        "kind": "current_rss",
+        "source": "/proc/self/statm"
+      },
+      "qt": {
+        "controller_services": {
+          "class": "Controller",
+          "visible": null,
+          "qtimers_total": 9,
+          "qtimers_active": 4,
+          "active_timer_intervals_ms": {
+            "1000": 1,
+            "30000": 1,
+            "5000": 1,
+            "900000": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "minibar": {
+          "class": "MiniBar",
+          "visible": true,
+          "qtimers_total": 11,
+          "qtimers_active": 1,
+          "active_timer_intervals_ms": {
+            "21685": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "standby": {
+          "class": "StandbyWindow",
+          "visible": false,
+          "qtimers_total": 9,
+          "qtimers_active": 0,
+          "active_timer_intervals_ms": {},
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        }
+      }
+    },
+    {
+      "elapsed_seconds": 10.001952428999857,
+      "process_cpu_seconds": 0.010195228,
+      "interval_cpu_percent_one_core": 0.07349860722639603,
+      "memory": {
+        "bytes": 66469888,
+        "kind": "current_rss",
+        "source": "/proc/self/statm"
+      },
+      "qt": {
+        "controller_services": {
+          "class": "Controller",
+          "visible": null,
+          "qtimers_total": 9,
+          "qtimers_active": 4,
+          "active_timer_intervals_ms": {
+            "1000": 1,
+            "30000": 1,
+            "5000": 1,
+            "900000": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "minibar": {
+          "class": "MiniBar",
+          "visible": true,
+          "qtimers_total": 11,
+          "qtimers_active": 1,
+          "active_timer_intervals_ms": {
+            "21685": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "standby": {
+          "class": "StandbyWindow",
+          "visible": false,
+          "qtimers_total": 9,
+          "qtimers_active": 0,
+          "active_timer_intervals_ms": {},
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        }
+      }
+    },
+    {
+      "elapsed_seconds": 11.001742436999848,
+      "process_cpu_seconds": 0.010931261999999997,
+      "interval_cpu_percent_one_core": 0.07361885937151746,
+      "memory": {
+        "bytes": 66473984,
+        "kind": "current_rss",
+        "source": "/proc/self/statm"
+      },
+      "qt": {
+        "controller_services": {
+          "class": "Controller",
+          "visible": null,
+          "qtimers_total": 9,
+          "qtimers_active": 4,
+          "active_timer_intervals_ms": {
+            "1000": 1,
+            "30000": 1,
+            "5000": 1,
+            "900000": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "minibar": {
+          "class": "MiniBar",
+          "visible": true,
+          "qtimers_total": 11,
+          "qtimers_active": 1,
+          "active_timer_intervals_ms": {
+            "21685": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "standby": {
+          "class": "StandbyWindow",
+          "visible": false,
+          "qtimers_total": 9,
+          "qtimers_active": 0,
+          "active_timer_intervals_ms": {},
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        }
+      }
+    },
+    {
+      "elapsed_seconds": 12.001479348999965,
+      "process_cpu_seconds": 0.011638754000000001,
+      "interval_cpu_percent_one_core": 0.0707678181637372,
+      "memory": {
+        "bytes": 66478080,
+        "kind": "current_rss",
+        "source": "/proc/self/statm"
+      },
+      "qt": {
+        "controller_services": {
+          "class": "Controller",
+          "visible": null,
+          "qtimers_total": 9,
+          "qtimers_active": 4,
+          "active_timer_intervals_ms": {
+            "1000": 1,
+            "30000": 1,
+            "5000": 1,
+            "900000": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "minibar": {
+          "class": "MiniBar",
+          "visible": true,
+          "qtimers_total": 11,
+          "qtimers_active": 1,
+          "active_timer_intervals_ms": {
+            "21685": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "standby": {
+          "class": "StandbyWindow",
+          "visible": false,
+          "qtimers_total": 9,
+          "qtimers_active": 0,
+          "active_timer_intervals_ms": {},
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        }
+      }
+    },
+    {
+      "elapsed_seconds": 13.002062573999865,
+      "process_cpu_seconds": 0.013183681999999974,
+      "interval_cpu_percent_one_core": 0.15440274845704385,
+      "memory": {
+        "bytes": 66478080,
+        "kind": "current_rss",
+        "source": "/proc/self/statm"
+      },
+      "qt": {
+        "controller_services": {
+          "class": "Controller",
+          "visible": null,
+          "qtimers_total": 9,
+          "qtimers_active": 4,
+          "active_timer_intervals_ms": {
+            "1000": 1,
+            "30000": 1,
+            "5000": 1,
+            "900000": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "minibar": {
+          "class": "MiniBar",
+          "visible": true,
+          "qtimers_total": 11,
+          "qtimers_active": 1,
+          "active_timer_intervals_ms": {
+            "21685": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "standby": {
+          "class": "StandbyWindow",
+          "visible": false,
+          "qtimers_total": 9,
+          "qtimers_active": 0,
+          "active_timer_intervals_ms": {},
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        }
+      }
+    },
+    {
+      "elapsed_seconds": 14.001934177999829,
+      "process_cpu_seconds": 0.013998000999999982,
+      "interval_cpu_percent_one_core": 0.0814423568728568,
+      "memory": {
+        "bytes": 66478080,
+        "kind": "current_rss",
+        "source": "/proc/self/statm"
+      },
+      "qt": {
+        "controller_services": {
+          "class": "Controller",
+          "visible": null,
+          "qtimers_total": 9,
+          "qtimers_active": 4,
+          "active_timer_intervals_ms": {
+            "1000": 1,
+            "30000": 1,
+            "5000": 1,
+            "900000": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "minibar": {
+          "class": "MiniBar",
+          "visible": true,
+          "qtimers_total": 11,
+          "qtimers_active": 1,
+          "active_timer_intervals_ms": {
+            "21685": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "standby": {
+          "class": "StandbyWindow",
+          "visible": false,
+          "qtimers_total": 9,
+          "qtimers_active": 0,
+          "active_timer_intervals_ms": {},
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        }
+      }
+    },
+    {
+      "elapsed_seconds": 15.001359300999866,
+      "process_cpu_seconds": 0.017379899999999976,
+      "interval_cpu_percent_one_core": 0.3383844294256217,
+      "memory": {
+        "bytes": 66482176,
+        "kind": "current_rss",
+        "source": "/proc/self/statm"
+      },
+      "qt": {
+        "controller_services": {
+          "class": "Controller",
+          "visible": null,
+          "qtimers_total": 9,
+          "qtimers_active": 4,
+          "active_timer_intervals_ms": {
+            "1000": 1,
+            "30000": 1,
+            "5000": 1,
+            "900000": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "minibar": {
+          "class": "MiniBar",
+          "visible": true,
+          "qtimers_total": 11,
+          "qtimers_active": 1,
+          "active_timer_intervals_ms": {
+            "21685": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "standby": {
+          "class": "StandbyWindow",
+          "visible": false,
+          "qtimers_total": 9,
+          "qtimers_active": 0,
+          "active_timer_intervals_ms": {},
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        }
+      }
+    },
+    {
+      "elapsed_seconds": 16.001576115999796,
+      "process_cpu_seconds": 0.01854882899999999,
+      "interval_cpu_percent_one_core": 0.1168675613596932,
+      "memory": {
+        "bytes": 66486272,
+        "kind": "current_rss",
+        "source": "/proc/self/statm"
+      },
+      "qt": {
+        "controller_services": {
+          "class": "Controller",
+          "visible": null,
+          "qtimers_total": 9,
+          "qtimers_active": 4,
+          "active_timer_intervals_ms": {
+            "1000": 1,
+            "30000": 1,
+            "5000": 1,
+            "900000": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "minibar": {
+          "class": "MiniBar",
+          "visible": true,
+          "qtimers_total": 11,
+          "qtimers_active": 1,
+          "active_timer_intervals_ms": {
+            "21685": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "standby": {
+          "class": "StandbyWindow",
+          "visible": false,
+          "qtimers_total": 9,
+          "qtimers_active": 0,
+          "active_timer_intervals_ms": {},
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        }
+      }
+    },
+    {
+      "elapsed_seconds": 17.002122901999883,
+      "process_cpu_seconds": 0.021060372999999993,
+      "interval_cpu_percent_one_core": 0.2510171473380544,
+      "memory": {
+        "bytes": 66486272,
+        "kind": "current_rss",
+        "source": "/proc/self/statm"
+      },
+      "qt": {
+        "controller_services": {
+          "class": "Controller",
+          "visible": null,
+          "qtimers_total": 9,
+          "qtimers_active": 4,
+          "active_timer_intervals_ms": {
+            "1000": 1,
+            "30000": 1,
+            "5000": 1,
+            "900000": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "minibar": {
+          "class": "MiniBar",
+          "visible": true,
+          "qtimers_total": 11,
+          "qtimers_active": 1,
+          "active_timer_intervals_ms": {
+            "21685": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "standby": {
+          "class": "StandbyWindow",
+          "visible": false,
+          "qtimers_total": 9,
+          "qtimers_active": 0,
+          "active_timer_intervals_ms": {},
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        }
+      }
+    },
+    {
+      "elapsed_seconds": 18.002148828999907,
+      "process_cpu_seconds": 0.022008011999999993,
+      "interval_cpu_percent_one_core": 0.09476144312006195,
+      "memory": {
+        "bytes": 66494464,
+        "kind": "current_rss",
+        "source": "/proc/self/statm"
+      },
+      "qt": {
+        "controller_services": {
+          "class": "Controller",
+          "visible": null,
+          "qtimers_total": 9,
+          "qtimers_active": 4,
+          "active_timer_intervals_ms": {
+            "1000": 1,
+            "30000": 1,
+            "5000": 1,
+            "900000": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "minibar": {
+          "class": "MiniBar",
+          "visible": true,
+          "qtimers_total": 11,
+          "qtimers_active": 1,
+          "active_timer_intervals_ms": {
+            "21685": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "standby": {
+          "class": "StandbyWindow",
+          "visible": false,
+          "qtimers_total": 9,
+          "qtimers_active": 0,
+          "active_timer_intervals_ms": {},
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        }
+      }
+    },
+    {
+      "elapsed_seconds": 19.00160733199982,
+      "process_cpu_seconds": 0.024403583999999978,
+      "interval_cpu_percent_one_core": 0.23968698978592712,
+      "memory": {
+        "bytes": 66494464,
+        "kind": "current_rss",
+        "source": "/proc/self/statm"
+      },
+      "qt": {
+        "controller_services": {
+          "class": "Controller",
+          "visible": null,
+          "qtimers_total": 9,
+          "qtimers_active": 4,
+          "active_timer_intervals_ms": {
+            "1000": 1,
+            "30000": 1,
+            "5000": 1,
+            "900000": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "minibar": {
+          "class": "MiniBar",
+          "visible": true,
+          "qtimers_total": 11,
+          "qtimers_active": 1,
+          "active_timer_intervals_ms": {
+            "21685": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "standby": {
+          "class": "StandbyWindow",
+          "visible": false,
+          "qtimers_total": 9,
+          "qtimers_active": 0,
+          "active_timer_intervals_ms": {},
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        }
+      }
+    },
+    {
+      "elapsed_seconds": 20.001804705999803,
+      "process_cpu_seconds": 0.027557904999999994,
+      "interval_cpu_percent_one_core": 0.3153698541904065,
+      "memory": {
+        "bytes": 66498560,
+        "kind": "current_rss",
+        "source": "/proc/self/statm"
+      },
+      "qt": {
+        "controller_services": {
+          "class": "Controller",
+          "visible": null,
+          "qtimers_total": 9,
+          "qtimers_active": 4,
+          "active_timer_intervals_ms": {
+            "1000": 1,
+            "30000": 1,
+            "5000": 1,
+            "900000": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "minibar": {
+          "class": "MiniBar",
+          "visible": true,
+          "qtimers_total": 11,
+          "qtimers_active": 1,
+          "active_timer_intervals_ms": {
+            "59781": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "standby": {
+          "class": "StandbyWindow",
+          "visible": false,
+          "qtimers_total": 9,
+          "qtimers_active": 0,
+          "active_timer_intervals_ms": {},
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        }
+      }
+    },
+    {
+      "elapsed_seconds": 21.001394782999796,
+      "process_cpu_seconds": 0.031103946999999993,
+      "interval_cpu_percent_one_core": 0.3547496200284932,
+      "memory": {
+        "bytes": 66498560,
+        "kind": "current_rss",
+        "source": "/proc/self/statm"
+      },
+      "qt": {
+        "controller_services": {
+          "class": "Controller",
+          "visible": null,
+          "qtimers_total": 9,
+          "qtimers_active": 4,
+          "active_timer_intervals_ms": {
+            "1000": 1,
+            "30000": 1,
+            "5000": 1,
+            "900000": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "minibar": {
+          "class": "MiniBar",
+          "visible": true,
+          "qtimers_total": 11,
+          "qtimers_active": 1,
+          "active_timer_intervals_ms": {
+            "59781": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "standby": {
+          "class": "StandbyWindow",
+          "visible": false,
+          "qtimers_total": 9,
+          "qtimers_active": 0,
+          "active_timer_intervals_ms": {},
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        }
+      }
+    },
+    {
+      "elapsed_seconds": 22.001628514000004,
+      "process_cpu_seconds": 0.032290261000000015,
+      "interval_cpu_percent_one_core": 0.1186036786435645,
+      "memory": {
+        "bytes": 66498560,
+        "kind": "current_rss",
+        "source": "/proc/self/statm"
+      },
+      "qt": {
+        "controller_services": {
+          "class": "Controller",
+          "visible": null,
+          "qtimers_total": 9,
+          "qtimers_active": 4,
+          "active_timer_intervals_ms": {
+            "1000": 1,
+            "30000": 1,
+            "5000": 1,
+            "900000": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "minibar": {
+          "class": "MiniBar",
+          "visible": true,
+          "qtimers_total": 11,
+          "qtimers_active": 1,
+          "active_timer_intervals_ms": {
+            "59781": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "standby": {
+          "class": "StandbyWindow",
+          "visible": false,
+          "qtimers_total": 9,
+          "qtimers_active": 0,
+          "active_timer_intervals_ms": {},
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        }
+      }
+    },
+    {
+      "elapsed_seconds": 23.00134891499988,
+      "process_cpu_seconds": 0.035953686999999984,
+      "interval_cpu_percent_one_core": 0.3664450576717221,
+      "memory": {
+        "bytes": 66498560,
+        "kind": "current_rss",
+        "source": "/proc/self/statm"
+      },
+      "qt": {
+        "controller_services": {
+          "class": "Controller",
+          "visible": null,
+          "qtimers_total": 9,
+          "qtimers_active": 4,
+          "active_timer_intervals_ms": {
+            "1000": 1,
+            "30000": 1,
+            "5000": 1,
+            "900000": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "minibar": {
+          "class": "MiniBar",
+          "visible": true,
+          "qtimers_total": 11,
+          "qtimers_active": 1,
+          "active_timer_intervals_ms": {
+            "59781": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "standby": {
+          "class": "StandbyWindow",
+          "visible": false,
+          "qtimers_total": 9,
+          "qtimers_active": 0,
+          "active_timer_intervals_ms": {},
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        }
+      }
+    },
+    {
+      "elapsed_seconds": 24.001661366999997,
+      "process_cpu_seconds": 0.03722604900000001,
+      "interval_cpu_percent_one_core": 0.1271964572125389,
+      "memory": {
+        "bytes": 66502656,
+        "kind": "current_rss",
+        "source": "/proc/self/statm"
+      },
+      "qt": {
+        "controller_services": {
+          "class": "Controller",
+          "visible": null,
+          "qtimers_total": 9,
+          "qtimers_active": 4,
+          "active_timer_intervals_ms": {
+            "1000": 1,
+            "30000": 1,
+            "5000": 1,
+            "900000": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "minibar": {
+          "class": "MiniBar",
+          "visible": true,
+          "qtimers_total": 11,
+          "qtimers_active": 1,
+          "active_timer_intervals_ms": {
+            "59781": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "standby": {
+          "class": "StandbyWindow",
+          "visible": false,
+          "qtimers_total": 9,
+          "qtimers_active": 0,
+          "active_timer_intervals_ms": {},
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        }
+      }
+    },
+    {
+      "elapsed_seconds": 25.001437613000007,
+      "process_cpu_seconds": 0.03991947300000001,
+      "interval_cpu_percent_one_core": 0.26940267992724165,
+      "memory": {
+        "bytes": 66506752,
+        "kind": "current_rss",
+        "source": "/proc/self/statm"
+      },
+      "qt": {
+        "controller_services": {
+          "class": "Controller",
+          "visible": null,
+          "qtimers_total": 9,
+          "qtimers_active": 4,
+          "active_timer_intervals_ms": {
+            "1000": 1,
+            "30000": 1,
+            "5000": 1,
+            "900000": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "minibar": {
+          "class": "MiniBar",
+          "visible": true,
+          "qtimers_total": 11,
+          "qtimers_active": 1,
+          "active_timer_intervals_ms": {
+            "59781": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "standby": {
+          "class": "StandbyWindow",
+          "visible": false,
+          "qtimers_total": 9,
+          "qtimers_active": 0,
+          "active_timer_intervals_ms": {},
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        }
+      }
+    },
+    {
+      "elapsed_seconds": 26.00155103299994,
+      "process_cpu_seconds": 0.04099422099999997,
+      "interval_cpu_percent_one_core": 0.10746261159059634,
+      "memory": {
+        "bytes": 66506752,
+        "kind": "current_rss",
+        "source": "/proc/self/statm"
+      },
+      "qt": {
+        "controller_services": {
+          "class": "Controller",
+          "visible": null,
+          "qtimers_total": 9,
+          "qtimers_active": 4,
+          "active_timer_intervals_ms": {
+            "1000": 1,
+            "30000": 1,
+            "5000": 1,
+            "900000": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "minibar": {
+          "class": "MiniBar",
+          "visible": true,
+          "qtimers_total": 11,
+          "qtimers_active": 1,
+          "active_timer_intervals_ms": {
+            "59781": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "standby": {
+          "class": "StandbyWindow",
+          "visible": false,
+          "qtimers_total": 9,
+          "qtimers_active": 0,
+          "active_timer_intervals_ms": {},
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        }
+      }
+    },
+    {
+      "elapsed_seconds": 27.00169809099998,
+      "process_cpu_seconds": 0.04209787200000001,
+      "interval_cpu_percent_one_core": 0.11034887231553464,
+      "memory": {
+        "bytes": 66506752,
+        "kind": "current_rss",
+        "source": "/proc/self/statm"
+      },
+      "qt": {
+        "controller_services": {
+          "class": "Controller",
+          "visible": null,
+          "qtimers_total": 9,
+          "qtimers_active": 4,
+          "active_timer_intervals_ms": {
+            "1000": 1,
+            "30000": 1,
+            "5000": 1,
+            "900000": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "minibar": {
+          "class": "MiniBar",
+          "visible": true,
+          "qtimers_total": 11,
+          "qtimers_active": 1,
+          "active_timer_intervals_ms": {
+            "59781": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "standby": {
+          "class": "StandbyWindow",
+          "visible": false,
+          "qtimers_total": 9,
+          "qtimers_active": 0,
+          "active_timer_intervals_ms": {},
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        }
+      }
+    },
+    {
+      "elapsed_seconds": 28.00335797499997,
+      "process_cpu_seconds": 0.042953875999999974,
+      "interval_cpu_percent_one_core": 0.08545854872230992,
+      "memory": {
+        "bytes": 66510848,
+        "kind": "current_rss",
+        "source": "/proc/self/statm"
+      },
+      "qt": {
+        "controller_services": {
+          "class": "Controller",
+          "visible": null,
+          "qtimers_total": 9,
+          "qtimers_active": 4,
+          "active_timer_intervals_ms": {
+            "1000": 1,
+            "30000": 1,
+            "5000": 1,
+            "900000": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "minibar": {
+          "class": "MiniBar",
+          "visible": true,
+          "qtimers_total": 11,
+          "qtimers_active": 1,
+          "active_timer_intervals_ms": {
+            "59781": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "standby": {
+          "class": "StandbyWindow",
+          "visible": false,
+          "qtimers_total": 9,
+          "qtimers_active": 0,
+          "active_timer_intervals_ms": {},
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        }
+      }
+    },
+    {
+      "elapsed_seconds": 29.00134887199988,
+      "process_cpu_seconds": 0.04389517099999998,
+      "interval_cpu_percent_one_core": 0.09431899657899331,
+      "memory": {
+        "bytes": 66510848,
+        "kind": "current_rss",
+        "source": "/proc/self/statm"
+      },
+      "qt": {
+        "controller_services": {
+          "class": "Controller",
+          "visible": null,
+          "qtimers_total": 9,
+          "qtimers_active": 4,
+          "active_timer_intervals_ms": {
+            "1000": 1,
+            "30000": 1,
+            "5000": 1,
+            "900000": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "minibar": {
+          "class": "MiniBar",
+          "visible": true,
+          "qtimers_total": 11,
+          "qtimers_active": 1,
+          "active_timer_intervals_ms": {
+            "59781": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "standby": {
+          "class": "StandbyWindow",
+          "visible": false,
+          "qtimers_total": 9,
+          "qtimers_active": 0,
+          "active_timer_intervals_ms": {},
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        }
+      }
+    },
+    {
+      "elapsed_seconds": 30.003168477999907,
+      "process_cpu_seconds": 0.04666074299999998,
+      "interval_cpu_percent_one_core": 0.27605488886787877,
+      "memory": {
+        "bytes": 66510848,
+        "kind": "current_rss",
+        "source": "/proc/self/statm"
+      },
+      "qt": {
+        "controller_services": {
+          "class": "Controller",
+          "visible": null,
+          "qtimers_total": 9,
+          "qtimers_active": 4,
+          "active_timer_intervals_ms": {
+            "1000": 1,
+            "30000": 1,
+            "5000": 1,
+            "900000": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "minibar": {
+          "class": "MiniBar",
+          "visible": true,
+          "qtimers_total": 11,
+          "qtimers_active": 1,
+          "active_timer_intervals_ms": {
+            "59781": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "standby": {
+          "class": "StandbyWindow",
+          "visible": false,
+          "qtimers_total": 9,
+          "qtimers_active": 0,
+          "active_timer_intervals_ms": {},
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        }
+      }
+    },
+    {
+      "elapsed_seconds": 30.00405767699999,
+      "process_cpu_seconds": 0.04754772199999999,
+      "interval_cpu_percent_one_core": null,
+      "memory": {
+        "bytes": 66519040,
+        "kind": "current_rss",
+        "source": "/proc/self/statm"
+      },
+      "qt": {
+        "controller_services": {
+          "class": "Controller",
+          "visible": null,
+          "qtimers_total": 9,
+          "qtimers_active": 4,
+          "active_timer_intervals_ms": {
+            "1000": 1,
+            "30000": 1,
+            "5000": 1,
+            "900000": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "minibar": {
+          "class": "MiniBar",
+          "visible": true,
+          "qtimers_total": 11,
+          "qtimers_active": 1,
+          "active_timer_intervals_ms": {
+            "59781": 1
+          },
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        },
+        "standby": {
+          "class": "StandbyWindow",
+          "visible": false,
+          "qtimers_total": 9,
+          "qtimers_active": 0,
+          "active_timer_intervals_ms": {},
+          "qabstractanimations_total": 0,
+          "qabstractanimations_running": 0
+        }
+      }
+    }
+  ],
+  "switch_actions": [],
+  "errors": [],
+  "results": {
+    "elapsed_seconds": 30.00417762500001,
+    "process_cpu_seconds": 0.047667989999999966,
+    "cpu_percent_one_core": 0.15887117652670524,
+    "interval_cpu_percent_one_core": {
+      "min": 0.0699651813816851,
+      "max": 0.3664450576717221,
+      "mean": 0.15525933729464514,
+      "median": 0.11253121404952535
+    },
+    "memory_bytes": {
+      "min": 66449408,
+      "max": 66519040,
+      "mean": 66484480.0,
+      "median": 66484224.0
+    },
+    "memory_sources": [
+      "/proc/self/statm"
+    ],
+    "memory_kinds": [
+      "current_rss"
+    ],
+    "weather_refresh_calls_suppressed": 1,
+    "http_calls_blocked": 0,
+    "switch_actions_completed": 0
+  },
+  "finished_utc": "2026-11-17T09:18:10.344050+00:00"
+}

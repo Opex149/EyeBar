@@ -1,0 +1,64 @@
+# Изменённые файлы
+
+Относительно main репозитория на момент начала финализации.
+
+- `.gitignore`
+- `BIG_UPDATE.md`
+- `CHANGED_FILES.md`
+- `EyeBar.spec`
+- `MINIBAR_VISIBILITY_FIX.md`
+- `README.md`
+- `REQUIREMENTS_STATUS.md`
+- `V1_1_BUILD_AND_TEST.md`
+- `V1_1_RELEASE_NOTES.md`
+- `WINDOWS_CHECKLIST.md`
+- `eyebar/__init__.py`
+- `eyebar/app.py`
+- `eyebar/config.py`
+- `eyebar/mascots/__init__.py`
+- `eyebar/mascots/base.py`
+- `eyebar/mascots/classic_blue/__init__.py`
+- `eyebar/mascots/classic_blue/cat.py`
+- `eyebar/mascots/common.py`
+- `eyebar/mascots/cyber_cat/cat.py`
+- `eyebar/services/alarm_logic.py`
+- `eyebar/services/alarms.py`
+- `eyebar/services/night_logic.py`
+- `eyebar/services/nightmode.py`
+- `eyebar/services/timer.py`
+- `eyebar/services/weather.py`
+- `eyebar/ui/alarms.py`
+- `eyebar/ui/glass.py`
+- `eyebar/ui/minibar.py`
+- `eyebar/ui/settings.py`
+- `eyebar/ui/standby.py`
+- `eyebar/ui/widgets.py`
+- `locales/en.json`
+- `locales/ru.json`
+- `preview/Classic_Blue_states.png`
+- `preview/StandBy_classic.png`
+- `preview/StandBy_dashboard.png`
+- `preview/StandBy_minimal.png`
+- `tests/test_alarm_audio.py`
+- `tests/test_animation_lifecycle.py`
+- `tests/test_big_update.py`
+- `tests/test_config_recovery.py`
+- `tests/test_minibar_visibility.py`
+- `tests/test_notes_persistence.py`
+- `tests/test_qt_smoke.py`
+- `tests/test_quick_access.py`
+- `tests/test_standby_layout.py`
+- `tests/test_timer_lifecycle.py`
+- `tests/test_v11.py`
+- `tests/test_weather_freshness.py`
+- `tools/check_display_matrix.py`
+- `tools/profile_runtime.py`
+- `validation/RESULTS.md`
+- `validation/display_matrix.json`
+- `validation/layout_matrix.json`
+- `validation/performance_disabled.json`
+- `validation/performance_idle.json`
+- `validation/performance_switching.json`
+- `validation/performance_switching_soak.json`
+
+Дополнительно downloads/EyeBar_1.1_BIG_UPDATE.zip содержит полный проект.

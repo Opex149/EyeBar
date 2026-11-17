@@ -10,9 +10,9 @@ import pkgutil
 
 from .base import Mascot
 # Static imports guarantee that PyInstaller finds built-in mascots.
-from . import cyber_cat, neon_ghost, luna_bunny, byte_fox
+from . import cyber_cat, neon_ghost, luna_bunny, byte_fox, classic_blue
 
-_BUILTINS = (cyber_cat, neon_ghost, luna_bunny, byte_fox)
+_BUILTINS = (cyber_cat, neon_ghost, luna_bunny, byte_fox, classic_blue)
 
 
 def discover() -> dict[str, Mascot]:

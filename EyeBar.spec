@@ -9,7 +9,7 @@ if (project / "assets").is_dir():
     datas.append((str(project / "assets"), "assets"))
 
 # Include any non-Python files supplied with mascot packages (if present).
-for package in ("eyebar.mascots.cyber_cat", "eyebar.mascots.neon_ghost", "eyebar.mascots.luna_bunny", "eyebar.mascots.byte_fox"):
+for package in ("eyebar.mascots.cyber_cat", "eyebar.mascots.neon_ghost", "eyebar.mascots.luna_bunny", "eyebar.mascots.byte_fox", "eyebar.mascots.classic_blue"):
     datas += collect_data_files(package)
 
 hiddenimports = [
@@ -21,6 +21,8 @@ hiddenimports = [
     "eyebar.mascots.luna_bunny.bunny",
     "eyebar.mascots.byte_fox",
     "eyebar.mascots.byte_fox.fox",
+    "eyebar.mascots.classic_blue",
+    "eyebar.mascots.classic_blue.cat",
 ]
 # media.py loads these via importlib; they are optional on systems without
 # Windows Runtime packages. Include their installed submodules when present.

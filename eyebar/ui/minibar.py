@@ -17,7 +17,7 @@ from PyQt6.QtCore import (
     QEasingCurve, QFileInfo, QPauseAnimation, QPoint, QPointF, QPropertyAnimation, QRect, QRectF, QSize,
     QSequentialAnimationGroup, QStandardPaths, QVariantAnimation, QTimer, Qt,
 )
-from PyQt6.QtGui import QCursor, QGuiApplication, QPainter, QDesktopServices
+from PyQt6.QtGui import QColor, QCursor, QGuiApplication, QPainter, QDesktopServices
 from PyQt6.QtWidgets import (
     QDialog, QFileIconProvider, QGraphicsOpacityEffect, QGridLayout, QHBoxLayout, QInputDialog, QLabel, QMessageBox, QMenu,
     QPushButton, QSystemTrayIcon, QVBoxLayout, QWidget,
@@ -53,6 +53,30 @@ class NotesDialog(QDialog):
         self.setWindowTitle(self.ctx.i18n.t("notes.title"))
 
 
+class NightShade(QWidget):
+    """Mouse-transparent night tint, painted ONLY while night mode is enabled.
+
+    A transparent CompositionMode_Source fill would erase the shared Qt
+    backing store on some Windows/Qt versions, leaving the whole mini-bar
+    invisible even though its top-level window is still shown. Keep the
+    overlay hidden instead of "painting transparency" when inactive.
+    """
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.enabled = False
+        self.hide()  # Never cover the main surface in normal mode.
+
+    def paintEvent(self, e) -> None:
+        if not self.enabled:
+            return
+        p = QPainter(self)
+        # SourceOver preserves all already painted pixels beneath this child.
+        p.fillRect(self.rect(), QColor(1, 4, 10, 115))
+        p.end()
+
+
 class MiniBar(QWidget):
     def __init__(self, ctx) -> None:
         super().__init__(None, Qt.WindowType.FramelessWindowHint
@@ -66,10 +90,12 @@ class MiniBar(QWidget):
         self._anim: QVariantAnimation | None = None
         self._anim_anchor: tuple[int, int] | None = None
         self._flight: QSequentialAnimationGroup | None = None
+        self._flight_home: QPoint | None = None
         self._flying = False
         self._notes: NotesDialog | None = None
         self._tips: list[tuple[QPushButton, str]] = []
         self._glass_phase = 0.0
+        self._night = False
         self._glass_timer = QTimer(self)
         self._glass_timer.setInterval(70)
         self._glass_timer.timeout.connect(self._tick_glass)
@@ -78,6 +104,9 @@ class MiniBar(QWidget):
         self.cube = QWidget(self)
         self._build_full()
         self._build_cube()
+        self.night_shade = NightShade(self)
+        self.night_shade.setGeometry(self.rect())
+        self.night_shade.raise_()
 
         ctx.i18n.changed.connect(self.retranslate)
         ctx.weather.updated.connect(lambda _d: self.refresh_labels())
@@ -195,6 +224,19 @@ class MiniBar(QWidget):
         lay.addStretch(1)
 
     # ------------------------------------------------------------------ состояние
+    def set_night_mode(self, enabled: bool) -> None:
+        self._night = bool(enabled)
+        self.mascot.set_night_mode(enabled)
+        self.cube_mascot.set_night_mode(enabled)
+        self.night_shade.enabled = self._night
+        # A fully transparent child is not harmless on all Qt backing stores.
+        # Hide it completely when the tint is off, including at startup.
+        self.night_shade.setVisible(self._night)
+        if self._night:
+            self.night_shade.raise_()
+            self.night_shade.update()
+        self._glass_timer.setInterval(260 if self._night else 70)
+
     def apply_settings(self) -> None:
         self.btn_standby.setVisible(bool(self.ctx.config.get("standby_enabled")))
         mascot = self.ctx.current_mascot()
@@ -205,9 +247,20 @@ class MiniBar(QWidget):
         self._apply_widget_layout()
         self.mascot.set_cursor_tracking(bool(self.ctx.config.get("follow_cursor")))
         self.cube_mascot.set_cursor_tracking(bool(self.ctx.config.get("follow_cursor")))
+        animations = self._decorations_enabled()
+        for widget in (self.mascot, self.cube_mascot):
+            widget.set_animations_enabled(bool(self.ctx.config.get("decorative_animations")))
+            widget.set_animation_intensity(int(self.ctx.config.get("animation_intensity")))
+            widget.set_appearance(int(self.ctx.config.get("mascot_scale")),
+                                  str(self.ctx.config.get("outline_color")),
+                                  int(self.ctx.config.get("backlight_brightness")))
+        if not animations:
+            self._finish_anim()
+            self._cancel_flight()
         self._refresh_sizes()
         mode = str(self.ctx.config.get("glass_mode"))
-        animated = (bool(self.ctx.config.get("glass_motion"))
+        animated = (self._decorations_enabled()
+                    and bool(self.ctx.config.get("glass_motion"))
                     and not bool(self.ctx.config.get("glass_lite"))
                     and (mode == "liquid" or self.ctx.config.get("glass_glow") != "off"))
         if animated and self.isVisible():
@@ -309,13 +362,20 @@ class MiniBar(QWidget):
         self.mascot.set_temperature_text(temp)
         self.cube_mascot.set_temperature_text(temp)
         self.timer_w.setToolTip(i18n.t("timer.dismiss_hint") if ctx.alert_active else "")
+        details = []
+        if ctx.weather.last_error:
+            details.append(i18n.t(ctx.weather.last_error))
+        if ctx.weather.last_updated:
+            details.append(i18n.t("weather.updated", time=ctx.weather.last_updated.astimezone().strftime("%H:%M")))
+        self.weather_w.setToolTip("\n".join(details))
 
     def _on_media(self, info) -> None:
         self.btn_play.setIcon(icon("pause" if info.playing else "play", 20))
 
     def _on_alert(self, on: bool) -> None:
-        self.mascot.set_alert(on)
-        self.cube_mascot.set_alert(on)
+        active = on or self.ctx.alarms.ringing is not None
+        self.mascot.set_alert(active)
+        self.cube_mascot.set_alert(active)
         self.refresh_labels()
 
     def _launch_app(self, path: str) -> None:
@@ -367,6 +427,10 @@ class MiniBar(QWidget):
 
     def resizeEvent(self, e) -> None:
         self._place_panels()
+        if hasattr(self, "night_shade"):
+            self.night_shade.setGeometry(self.rect())
+            if self.night_shade.enabled:
+                self.night_shade.raise_()
         super().resizeEvent(e)
 
     # ------------------------------------------------------------------ кубик
@@ -379,7 +443,7 @@ class MiniBar(QWidget):
         self.collapsed = flag
         self.ctx.config.set("bar_collapsed", flag)
         end = self._rect_for(self._target_size(), anchor)
-        if not self.ctx.config.get("glass_motion"):
+        if not self.ctx.config.get("glass_motion") or not self._decorations_enabled():
             animate = False
         if not animate or not self.isVisible():
             self.setGeometry(end)
@@ -421,6 +485,7 @@ class MiniBar(QWidget):
         anchor, self._anim_anchor = self._anim_anchor, None
         if anim is not None:
             anim.stop()
+            anim.deleteLater()
             self.setGeometry(self._rect_for(self._target_size(), anchor or self._anchor()))
         self.full.setGraphicsEffect(None)
         self.cube.setGraphicsEffect(None)
@@ -429,12 +494,13 @@ class MiniBar(QWidget):
     # ------------------------------------------------------------------ пасхалка: сдувает ветром
     def play_blow(self) -> None:
         """Окно (кубик или панель) уносит за правый край экрана; оно возвращается слева."""
-        if not self.isVisible() or self._flying:
+        if not self._decorations_enabled() or not self.isVisible() or self._flying:
             return
         self._finish_anim()
         self._flying = True
         screen = (self.screen() or QGuiApplication.primaryScreen()).geometry()
         home = self.pos()
+        self._flight_home = QPoint(home)
         out_right = QPoint(screen.right() + 20, home.y())
         in_left = QPoint(screen.left() - self.width() - 20, home.y())
 
@@ -458,19 +524,41 @@ class MiniBar(QWidget):
         group.start()
 
     def _end_blow(self, home: QPoint) -> None:
+        group, self._flight = self._flight, None
+        if group is not None:
+            group.deleteLater()
         self.move(home)
         self._flying = False
-        self._flight = None
+        self._flight_home = None
+
+    def _cancel_flight(self) -> None:
+        """StandBy, screenshots or hiding must not strand the bar off-screen."""
+        group, self._flight = self._flight, None
+        home, self._flight_home = self._flight_home, None
+        self._flying = False
+        if group is not None:
+            # Stop before restoring the home position: a stopped animation
+            # must not move the window back to its off-screen keyframe.
+            group.stop()
+            group.deleteLater()
+        if home is not None:
+            self.move(home)
 
     # ------------------------------------------------------------------ действия
     def _show_timer_menu(self) -> None:
         i18n = self.ctx.i18n
         menu = QMenu(self)
-        for n in (1, 5, 10, 25):
+        for n in (5, 15, 25, 45):
             menu.addAction(i18n.t("timer.preset", n=n), lambda n=n: self.ctx.start_timer(n * 60))
         menu.addAction(i18n.t("timer.custom"), self._custom_timer)
         if self.ctx.timer.active:
             menu.addSeparator()
+            menu.addAction(i18n.t("timer.pause"), self.ctx.pause_timer)
+        elif self.ctx.timer.paused or self.ctx.timer.state == "ready":
+            menu.addSeparator()
+            menu.addAction(i18n.t("timer.resume"), self.ctx.resume_timer)
+        if self.ctx.timer.initial_duration:
+            menu.addAction(i18n.t("timer.reset"), self.ctx.reset_timer)
             menu.addAction(i18n.t("timer.stop"), self.ctx.stop_timer)
         menu.exec(self.btn_timer.mapToGlobal(QPoint(0, self.btn_timer.height())))
 
@@ -486,6 +574,9 @@ class MiniBar(QWidget):
         t = self.ctx.i18n.t
         menu = QMenu(self)
         menu.addAction(t("quick.screenshot"), self._take_screenshot)
+        menu.addAction(t("alarm.title"), self.ctx.open_alarms)
+        menu.addAction(t("night.turn_off") if self.ctx.night.active else t("night.turn_on"),
+                       self.ctx.toggle_night)
         region = menu.addAction(t("quick.region"), lambda: self._windows_shortcut("snip"))
         region.setEnabled(os.name == "nt")
         menu.addSeparator()
@@ -574,8 +665,14 @@ class MiniBar(QWidget):
         self._notes.activateWindow()
 
     # ------------------------------------------------------------------ рисование и мышь
+    def _decorations_enabled(self) -> bool:
+        return bool(self.ctx.config.get("decorative_animations")) and self.ctx.config.get("animation_intensity") > 0
+
     def _tick_glass(self) -> None:
-        self._glass_phase += .065
+        if not self._decorations_enabled() or not self.isVisible():
+            self._glass_timer.stop()
+            return
+        self._glass_phase += .065 * self.ctx.config.get("animation_intensity") / 100
         self.update()
 
     def _apply_native_effects(self) -> None:
@@ -584,13 +681,37 @@ class MiniBar(QWidget):
                                   and not self.ctx.config.get("glass_lite"))
         winapi.set_capture_exclusion(self, bool(self.ctx.config.get("exclude_capture")))
 
+    def _restore_visible_bar(self) -> None:
+        """Recover a valid, on-screen bar/cube after StandBy or tray restore."""
+        self._finish_anim()
+        self._cancel_flight()
+        self._refresh_sizes()
+        wanted = self._rect_for(self._target_size(), self._anchor())
+        if self.geometry() != wanted:
+            self.setGeometry(wanted)
+        self._show_mode_panels()
+        self.setWindowOpacity(1.0)
+        self.update()
+
     def showEvent(self, event) -> None:
         super().showEvent(event)
+        # apply_settings() belongs to Controller.apply_settings(). Re-entering
+        # it here during native show/layout can hide freshly exposed children.
+        self._restore_visible_bar()
+        self.refresh_labels()
         self._apply_native_effects()
-        self.apply_settings()
+        mode = str(self.ctx.config.get("glass_mode"))
+        animated = (self._decorations_enabled()
+                    and bool(self.ctx.config.get("glass_motion"))
+                    and not bool(self.ctx.config.get("glass_lite"))
+                    and (mode == "liquid" or self.ctx.config.get("glass_glow") != "off"))
+        if animated:
+            self._glass_timer.start()
 
     def hideEvent(self, event) -> None:
         self._glass_timer.stop()
+        self._finish_anim()
+        self._cancel_flight()
         super().hideEvent(event)
 
     def paintEvent(self, e) -> None:

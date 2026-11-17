@@ -16,11 +16,14 @@ from .i18n import I18n
 from .mascots import discover
 from .paths import resource_dir, user_data_dir
 from .services import winapi
+from .services.alarms import AlarmEngine
+from .services.nightmode import NightModeController
 from .services.media import MediaService
 from .services.reactions import WeatherReactions
 from .services.timer import CountdownTimer
 from .services.weather import WeatherService
 from .ui.minibar import MiniBar
+from .ui.alarms import AlarmDialog
 from .ui.settings import SettingsDialog
 from .ui.standby import StandbyWindow
 from .ui.theme import STYLE, app_icon
@@ -64,7 +67,14 @@ class Controller(QObject):
         self.mascots = discover()
         if not self.mascots:
             raise RuntimeError("No built-in mascots are available. Reinstall EyeBar.")
+        # A startup preference must not override later character selections.
+        if self.config.get("classic_blue_default") and "classic_blue" in self.mascots:
+            self.config.set("mascot", "classic_blue", save=False)
         self.timer = CountdownTimer(self)
+        self.alarms = AlarmEngine(self.config, self)
+        self.night = NightModeController(self.config, self)
+        self.alarm_dialog: AlarmDialog | None = None
+        self._ring_popup: QMessageBox | None = None
         self.weather = WeatherService(self.config, self)
         self.media = MediaService(self)
         self.reactions = WeatherReactions(self)
@@ -95,6 +105,9 @@ class Controller(QObject):
         self.standby = StandbyWindow(self)
         self._update_emotion()
         self.standby.exitRequested.connect(self.exit_standby)
+        self.alarms.ringingChanged.connect(self._on_alarm_state)
+        self.night.changed.connect(self._apply_night)
+        self.night.powerError.connect(self._on_night_power_error)
 
         self.timer.finished.connect(self._on_timer_finished)
         self.weather.updated.connect(self._on_weather)
@@ -119,10 +132,24 @@ class Controller(QObject):
     def start_timer(self, seconds: int) -> None:
         self.dismiss_alert()
         self.timer.start(seconds)
+        if self.timer.active:
+            for widget in (self.minibar.mascot, self.minibar.cube_mascot, self.standby.mascot):
+                widget.react_to_timer()
 
     def stop_timer(self) -> None:
         self.dismiss_alert()
         self.timer.stop()
+
+    def pause_timer(self) -> None:
+        self.timer.pause()
+
+    def resume_timer(self) -> None:
+        self.dismiss_alert()
+        self.timer.resume()
+
+    def reset_timer(self) -> None:
+        self.dismiss_alert()
+        self.timer.reset()
 
     def open_settings(self) -> None:
         """Show and focus the settings window, reporting startup errors visibly."""
@@ -140,6 +167,7 @@ class Controller(QObject):
             if dlg.isMinimized():
                 dlg.showNormal()
             dlg.show()
+            dlg.preview.set_night_mode(self.night.active)
             dlg.raise_()
             dlg.activateWindow()
         except Exception:
@@ -153,6 +181,72 @@ class Controller(QObject):
                 f"{details[-3000:]}\n\n"
                 f"Details are saved to: {user_data_dir() / 'eyebar.log'}",
             )
+
+    def open_alarms(self) -> None:
+        """Opens the same alarm editor from the cube/bar, StandBy or settings."""
+        dlg = self.alarm_dialog
+        if dlg is None:
+            dlg = AlarmDialog(self)
+            self.alarm_dialog = dlg
+            dlg.finished.connect(lambda _result, d=dlg: self._on_alarms_closed(d))
+        dlg.show()
+        dlg.raise_()
+        dlg.activateWindow()
+
+    def _on_alarms_closed(self, dlg: AlarmDialog) -> None:
+        if self.alarm_dialog is dlg:
+            self.alarm_dialog = None
+        dlg.deleteLater()
+
+    def toggle_night(self) -> None:
+        self.night.set_manual(not self.night.active)
+
+    def _apply_night(self, enabled: bool) -> None:
+        self.minibar.set_night_mode(enabled)
+        self.standby.set_night_mode(enabled)
+        if self.settings_dialog is not None and self.settings_dialog.isVisible():
+            self.settings_dialog.preview.set_night_mode(enabled)
+        self._retranslate_tray()
+
+    def _on_night_power_error(self, error: str) -> None:
+        # Power plan is optional; errors must not block alarms, weather or UI.
+        if QSystemTrayIcon.isSystemTrayAvailable():
+            self.tray.showMessage("EyeBar", error, QSystemTrayIcon.MessageIcon.Warning, 4000)
+
+    def _on_alarm_state(self, on: bool) -> None:
+        active = on or self.alert_active
+        self.minibar.mascot.set_alert(active)
+        self.minibar.cube_mascot.set_alert(active)
+        self.standby.mascot.set_alert(active)
+        self._update_emotion()
+        if on:
+            if self.config.get("standby_enabled"):
+                self.enter_standby()
+                self.standby.show_alarm(self.alarms.ringing)
+            else:
+                self._show_alarm_popup()
+        else:
+            self.standby.hide_alarm()
+            if self._ring_popup is not None:
+                box, self._ring_popup = self._ring_popup, None
+                box.close()
+                box.deleteLater()
+
+    def _show_alarm_popup(self) -> None:
+        if self._ring_popup is not None:
+            return
+        t = self.i18n.t
+        box = QMessageBox(QMessageBox.Icon.Information, t("alarm.ringing"),
+                          t("alarm.ringing_body", time=self.alarms.ringing["time"]),
+                          QMessageBox.StandardButton.NoButton)
+        box.setWindowFlags(box.windowFlags() | Qt.WindowType.WindowStaysOnTopHint)
+        snooze_btn = box.addButton(t("alarm.snooze"), QMessageBox.ButtonRole.ActionRole)
+        stop_btn = box.addButton(t("alarm.stop"), QMessageBox.ButtonRole.AcceptRole)
+        box.buttonClicked.connect(lambda b: self.alarms.snooze() if b is snooze_btn else self.alarms.stop_ringing())
+        box.finished.connect(lambda _code: self.alarms.stop_ringing() if self._ring_popup is box else None)
+        self._ring_popup = box
+        box.show()
+        box.raise_()
 
     def _on_settings_closed(self, dlg: SettingsDialog) -> None:
         try:
@@ -185,7 +279,7 @@ class Controller(QObject):
         self._update_emotion()
 
     def _update_emotion(self) -> None:
-        if self.alert_active:
+        if self.alert_active or self.alarms.ringing is not None:
             emotion = "normal"  # тревога таймера показывает «! !»
         elif self._manual_emotion:
             emotion = self._manual_emotion
@@ -212,6 +306,8 @@ class Controller(QObject):
 
     def _on_blow(self) -> None:
         """Редкая пасхалка (5%): сдувает ветром. В StandBy улетает кот, иначе — мини-бар."""
+        if not self.config.get("decorative_animations") or self.config.get("animation_intensity") == 0:
+            return
         if self.standby.isVisible():
             self.standby.play_blow()
         elif self.minibar.isVisible():
@@ -226,7 +322,12 @@ class Controller(QObject):
 
     def exit_standby(self) -> None:
         self.standby.hide()
+        # StandBy is always-on-top: explicitly raise the restored mini-bar so
+        # Windows cannot keep the newly shown tool window behind it.
         self.minibar.show()
+        self.minibar.raise_()
+        if self.alarms.ringing is not None:
+            self._show_alarm_popup()
         # Otherwise StandBy reopens on the next 5-second idle tick.
         self._idle_snooze_until = time.monotonic() + 60
 
@@ -266,7 +367,7 @@ class Controller(QObject):
             self._update_emotion()
 
     def _on_weather(self, data) -> None:
-        self.weather_failed = data is None
+        self.weather_failed = data is None and self.weather.last_error is not None
         temp_text = f"{data['temp']:+.0f}°" if data and "temp" in data else "--°"
         self.minibar.set_temperature_text(temp_text)
         self.standby.set_temperature_text(temp_text)
@@ -292,6 +393,14 @@ class Controller(QObject):
         self.minibar.set_temperature_text(temp_text)
         self.standby.set_temperature_text(temp_text)
         self._on_reactions(self.reactions.rain_mode, self.reactions.windy)
+        self.night.refresh()
+        self._apply_night(self.night.active)
+        if self.alarms.ringing is not None:
+            if self.config.get("standby_enabled"):
+                if self.standby.isVisible():
+                    self.standby.show_alarm(self.alarms.ringing)
+            else:
+                self._show_alarm_popup()
         self._retranslate_tray()
         self.weather.refresh()
 
@@ -301,6 +410,8 @@ class Controller(QObject):
         menu = QMenu()
         self.act_show = menu.addAction("", lambda *_: self._show_bar())
         self.act_standby = menu.addAction("", lambda *_: self.enter_standby())
+        self.act_alarm = menu.addAction("", lambda *_: self.open_alarms())
+        self.act_night = menu.addAction("", lambda *_: self.toggle_night())
         self.act_settings = menu.addAction("", lambda *_: self.open_settings())
         menu.addSeparator()
         self.act_quit = menu.addAction("", lambda *_: self.quit())
@@ -317,6 +428,8 @@ class Controller(QObject):
         self.act_show.setText(t("tray.show"))
         self.act_standby.setText(t("tray.standby"))
         self.act_standby.setVisible(bool(self.config.get("standby_enabled")))
+        self.act_alarm.setText(t("alarm.title"))
+        self.act_night.setText(t("night.turn_off") if self.night.active else t("night.turn_on"))
         self.act_settings.setText(t("tray.settings"))
         self.act_quit.setText(t("tray.quit"))
 
@@ -333,6 +446,8 @@ class Controller(QObject):
             self.minibar._notes.edit.flush()
         self.standby.notes.flush()
         self.hotkey.unregister()
+        self.alarms.stop()
+        self.night.stop()
         self.media.stop()
         self.weather.stop()
         self.config.save()
@@ -343,6 +458,8 @@ class Controller(QObject):
 
     def start(self) -> None:
         self.apply_settings()
+        self.night.start()
+        self.alarms.start()
         self.media.start()
         self.minibar.show()
         if self.sim_weather:  # проверка пасхалок: python main.py --sim-weather=umbrella
