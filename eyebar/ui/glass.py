@@ -44,6 +44,7 @@ def paint_surface(p: QPainter, area: QRectF, cfg, radius: float,
     opacity = _clamp(cfg.get("glass_opacity"), 40, 100) / 100.0
     tint = _clamp(cfg.get("glass_tint"), 20, 100) / 100.0
     light = bool(cfg.get("glass_lite"))
+    backlight = _clamp(cfg.get("backlight_brightness") if cfg.get("backlight_brightness") is not None else 100, 10, 100) / 100.0
     glow = GLOW_COLORS.get(str(cfg.get("glass_glow") or "off"))
     if light:
         phase = 0.0
@@ -89,13 +90,17 @@ def paint_surface(p: QPainter, area: QRectF, cfg, radius: float,
         cx = area.left() + area.width() * (.5 + math.sin(phase) * .29)
         cy = area.bottom() - 3
         halo = QRadialGradient(QPointF(cx, cy), area.width() * .76)
-        halo.setColorAt(0, QColor(*glow, 50 if mode != "classic" else 32))
+        halo.setColorAt(0, QColor(*glow, round((50 if mode != "classic" else 32) * backlight)))
         halo.setColorAt(1, QColor(*glow, 0))
         p.setClipPath(path)
         p.fillPath(path, QBrush(halo))
         p.setClipping(False)
 
     p.setBrush(Qt.BrushStyle.NoBrush)
+    outline = QColor(str(cfg.get("outline_color") or ""))
+    if outline.isValid():
+        outline.setAlpha(round((50 if mode != "classic" else 32) * backlight))
+        stroke = outline
     p.setPen(QPen(stroke, 1.0))
     p.drawRoundedRect(area, radius, radius)
 

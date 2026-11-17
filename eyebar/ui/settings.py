@@ -3,11 +3,11 @@ from __future__ import annotations
 
 import os
 
-from PyQt6.QtCore import QDir, QRectF, QSize, Qt
+from PyQt6.QtCore import QDir, QEasingCurve, QPropertyAnimation, QRectF, QSize, QTime, Qt
 from PyQt6.QtGui import QColor, QGuiApplication, QKeySequence, QPainter
 from PyQt6.QtWidgets import (
-    QButtonGroup, QCheckBox, QComboBox, QDialog, QFileDialog, QFormLayout, QFrame, QHBoxLayout,
-    QKeySequenceEdit, QLabel, QLineEdit, QListWidget, QListWidgetItem, QMessageBox, QPushButton, QScrollArea, QSlider, QSpinBox, QVBoxLayout, QWidget,
+    QButtonGroup, QCheckBox, QColorDialog, QComboBox, QDialog, QFileDialog, QFormLayout, QFrame, QHBoxLayout,
+    QKeySequenceEdit, QLabel, QLineEdit, QListWidget, QListWidgetItem, QMessageBox, QPushButton, QScrollArea, QSlider, QSpinBox, QTimeEdit, QVBoxLayout, QWidget,
 )
 
 from ..config import DEFAULTS, LAUNCHER_SLOTS
@@ -57,6 +57,9 @@ class SettingsDialog(QDialog):
                          | Qt.WindowType.WindowCloseButtonHint)
         self.ctx = ctx
         cfg = ctx.config
+        self._open_fade = QPropertyAnimation(self, b"windowOpacity", self)
+        self._open_fade.setDuration(180)
+        self._open_fade.setEasingCurve(QEasingCurve.Type.OutCubic)
         self._initial_mascot = str(cfg.get("mascot"))
         screen_obj = QGuiApplication.primaryScreen()
         screen = screen_obj.availableGeometry() if screen_obj else None
@@ -70,6 +73,8 @@ class SettingsDialog(QDialog):
         self.sec_mascot = self._section()
         self.picker = MascotPicker(ctx, str(cfg.get("mascot")))
         self.picker.selected.connect(self._on_mascot)
+        self.classic_blue_default = QCheckBox()
+        self.classic_blue_default.setChecked(bool(cfg.get("classic_blue_default")))
 
         # ---------- эмоции (ручная проверка) ----------
         self.sec_emotions = self._section()
@@ -118,8 +123,45 @@ class SettingsDialog(QDialog):
         self._preview_accessory()
         self.follow_cursor = QCheckBox()
         self.follow_cursor.setChecked(bool(cfg.get("follow_cursor")))
+        self.preview.set_cursor_tracking(self.follow_cursor.isChecked())
+        self.follow_cursor.toggled.connect(self.preview.set_cursor_tracking)
         self.weather_effects = QCheckBox()
         self.weather_effects.setChecked(bool(cfg.get("weather_effects")))
+        self.decorative_animations = QCheckBox()
+        self.decorative_animations.setChecked(bool(cfg.get("decorative_animations")))
+        self.preview.set_animations_enabled(self.decorative_animations.isChecked())
+        self.decorative_animations.toggled.connect(self.preview.set_animations_enabled)
+        self.animation_intensity = QSlider(Qt.Orientation.Horizontal)
+        self.animation_intensity.setRange(0, 100)
+        self.animation_intensity.setValue(int(cfg.get("animation_intensity")))
+        self.intensity_value = QLabel()
+        self.mascot_scale = QSpinBox()
+        self.mascot_scale.setRange(80, 120)
+        self.mascot_scale.setSuffix("%")
+        self.mascot_scale.setValue(int(cfg.get("mascot_scale")))
+        self.backlight_brightness = QSlider(Qt.Orientation.Horizontal)
+        self.backlight_brightness.setRange(10, 100)
+        self.backlight_brightness.setValue(int(cfg.get("backlight_brightness")))
+        self.backlight_value = QLabel()
+        self._outline_color = str(cfg.get("outline_color"))
+        self.outline_color = QPushButton()
+        self.outline_color.clicked.connect(self._choose_outline_color)
+        self.mascot_form = QFormLayout()
+        self._mascot_rows = [
+            ("settings.animation_intensity", self._slider_field(self.animation_intensity, self.intensity_value)),
+            ("settings.mascot_scale", self.mascot_scale),
+            ("settings.outline_color", self.outline_color),
+            ("settings.backlight_brightness", self._slider_field(self.backlight_brightness, self.backlight_value)),
+        ]
+        self._mascot_labels = []
+        for _key, field in self._mascot_rows:
+            label = QLabel()
+            self._mascot_labels.append(label)
+            self.mascot_form.addRow(label, field)
+        for signal in (self.animation_intensity.valueChanged, self.mascot_scale.valueChanged,
+                       self.backlight_brightness.valueChanged):
+            signal.connect(self._sync_mascot_preview)
+        self._sync_mascot_preview()
 
         # ---------- оформление оригинальной боковой панели ----------
         self.sec_appearance = self._section()
@@ -219,13 +261,62 @@ class SettingsDialog(QDialog):
         self.general_form = QFormLayout()
         self.general_form.setVerticalSpacing(10)
         self.general_form.addRow(self.standby)
+        self.standby_mascot_position = QComboBox()
+        for position in ("left", "center", "right"):
+            self.standby_mascot_position.addItem("", position)
+        self.standby_mascot_position.setCurrentIndex(max(
+            0, self.standby_mascot_position.findData(cfg.get("standby_mascot_position"))))
+        self.standby_profile = QComboBox()
+        for profile in ("classic", "minimal", "dashboard"):
+            self.standby_profile.addItem("", profile)
+        self.standby_profile.setCurrentIndex(max(0, self.standby_profile.findData(cfg.get("standby_profile"))))
+        self.standby_autohide = QCheckBox()
+        self.standby_autohide.setChecked(bool(cfg.get("standby_autohide")))
+        self.standby_cards = {}
+        self.standby_cards_row = QWidget()
+        cards_layout = QHBoxLayout(self.standby_cards_row)
+        cards_layout.setContentsMargins(0, 0, 0, 0)
+        for name in ("weather", "music", "timer", "notes"):
+            check = QCheckBox()
+            check.setChecked(name in cfg.get("standby_cards"))
+            self.standby_cards[name] = check
+            cards_layout.addWidget(check)
         self._general_rows = [("settings.language", self.language), ("settings.hotkey", self.hotkey),
-                              ("settings.idle", self.idle), ("settings.city", self.city)]
+                              ("settings.idle", self.idle), ("settings.city", self.city),
+                              ("settings.standby_mascot_position", self.standby_mascot_position),
+                              ("settings.standby_profile", self.standby_profile),
+                              ("settings.standby_cards", self.standby_cards_row)]
         self._general_labels = []
         for _key, widget in self._general_rows:
             label = QLabel()
             self._general_labels.append(label)
             self.general_form.addRow(label, widget)
+        self.general_form.addRow(self.standby_autohide)
+
+        # ---------- будильники / ночной режим ----------
+        self.sec_night = self._section()
+        self.btn_alarms = QPushButton()
+        self.btn_alarms.clicked.connect(lambda _checked=False: ctx.open_alarms())
+        self.night_auto = QCheckBox()
+        self.night_auto.setChecked(bool(cfg.get("night_auto")))
+        self.night_start = QTimeEdit()
+        self.night_start.setDisplayFormat("HH:mm")
+        self.night_start.setTime(QTime.fromString(str(cfg.get("night_start")), "HH:mm"))
+        self.night_end = QTimeEdit()
+        self.night_end.setDisplayFormat("HH:mm")
+        self.night_end.setTime(QTime.fromString(str(cfg.get("night_end")), "HH:mm"))
+        self.night_power = QCheckBox()
+        self.night_power.setChecked(bool(cfg.get("night_power_enabled")))
+        self.night_hint = QLabel()
+        self.night_hint.setWordWrap(True)
+        self.night_hint.setObjectName("muted")
+        self.night_form = QFormLayout()
+        self.night_form.addRow(self.night_auto)
+        self.night_start_lbl = QLabel()
+        self.night_end_lbl = QLabel()
+        self.night_form.addRow(self.night_start_lbl, self.night_start)
+        self.night_form.addRow(self.night_end_lbl, self.night_end)
+        self.night_form.addRow(self.night_power)
 
         # ---------- быстрый запуск ----------
         self.sec_launcher = self._section()
@@ -320,12 +411,15 @@ class SettingsDialog(QDialog):
         cl.addSpacing(8)
         cl.addWidget(self.sec_mascot)
         cl.addWidget(self.picker)
+        cl.addWidget(self.classic_blue_default)
         cl.addSpacing(8)
         cl.addWidget(self.sec_emotions)
         cl.addLayout(emo_row)
         cl.addLayout(weather_demo_row)
         cl.addWidget(self.follow_cursor)
         cl.addWidget(self.weather_effects)
+        cl.addWidget(self.decorative_animations)
+        cl.addLayout(self.mascot_form)
         self.music_accessory_label = QLabel()
         cl.addWidget(self.music_accessory_label)
         cl.addWidget(self.music_accessory)
@@ -340,6 +434,11 @@ class SettingsDialog(QDialog):
         cl.addSpacing(8)
         cl.addWidget(self.sec_general)
         cl.addLayout(self.general_form)
+        cl.addSpacing(8)
+        cl.addWidget(self.sec_night)
+        cl.addWidget(self.btn_alarms)
+        cl.addLayout(self.night_form)
+        cl.addWidget(self.night_hint)
         cl.addSpacing(8)
         cl.addWidget(self.sec_launcher)
         cl.addLayout(self.launcher_form)
@@ -414,11 +513,36 @@ class SettingsDialog(QDialog):
         self.bar_width.setValue(DEFAULTS["bar_width"])
         self.bar_locked.setChecked(DEFAULTS["bar_locked"])
         self.exclude_capture.setChecked(DEFAULTS["exclude_capture"])
+        self.animation_intensity.setValue(DEFAULTS["animation_intensity"])
+        self.mascot_scale.setValue(DEFAULTS["mascot_scale"])
+        self.backlight_brightness.setValue(DEFAULTS["backlight_brightness"])
+        self._outline_color = DEFAULTS["outline_color"]
+        self._sync_mascot_preview()
         self._sync_appearance()
+
+    def _choose_outline_color(self, *_args) -> None:
+        color = QColorDialog.getColor(QColor(self._outline_color), self,
+                                      self.ctx.i18n.t("settings.outline_color"))
+        if color.isValid():
+            self._outline_color = color.name()
+            self._sync_mascot_preview()
+
+    def _sync_mascot_preview(self, *_args) -> None:
+        self.intensity_value.setText(f"{self.animation_intensity.value()}%")
+        self.backlight_value.setText(f"{self.backlight_brightness.value()}%")
+        self.outline_color.setText(self._outline_color.upper())
+        self.outline_color.setStyleSheet(f"border: 1px solid {self._outline_color};")
+        self.preview.set_animation_intensity(self.animation_intensity.value())
+        self.preview.set_appearance(self.mascot_scale.value(), self._outline_color,
+                                    self.backlight_brightness.value())
 
     def _sync_enabled(self, on: bool) -> None:
         self.hotkey.setEnabled(on)
         self.idle.setEnabled(on)
+        self.standby_mascot_position.setEnabled(on)
+        self.standby_profile.setEnabled(on)
+        self.standby_cards_row.setEnabled(on)
+        self.standby_autohide.setEnabled(on)
 
     def _fill_languages(self) -> None:
         self.language.clear()
@@ -496,6 +620,13 @@ class SettingsDialog(QDialog):
         self.sec_mascot.setText(t("settings.section.mascot").upper())
         self.sec_emotions.setText(t("settings.section.emotions").upper())
         self.sec_general.setText(t("settings.section.general").upper())
+        self.sec_night.setText(t("night.section").upper())
+        self.btn_alarms.setText(t("alarm.manage"))
+        self.night_auto.setText(t("night.auto"))
+        self.night_start_lbl.setText(t("night.start"))
+        self.night_end_lbl.setText(t("night.end"))
+        self.night_power.setText(t("night.power"))
+        self.night_hint.setText(t("night.hint"))
         self.sec_appearance.setText(t("settings.section.appearance").upper())
         for (key, _widget), label in zip(self._appearance_rows, self._appearance_labels):
             label.setText(t(key))
@@ -518,6 +649,20 @@ class SettingsDialog(QDialog):
         self.emotion_hint.setText(t("settings.emotions_hint"))
         self.follow_cursor.setText(t("settings.follow_cursor"))
         self.weather_effects.setText(t("settings.weather_effects"))
+        self.classic_blue_default.setText(t("settings.classic_blue_default"))
+        self.classic_blue_default.setToolTip(t("settings.classic_blue_default_hint"))
+        self.decorative_animations.setText(t("settings.decorative_animations"))
+        for (key, _field), label in zip(self._mascot_rows, self._mascot_labels):
+            label.setText(t(key))
+        for i in range(self.standby_profile.count()):
+            self.standby_profile.setItemText(i, t("settings.profile." + self.standby_profile.itemData(i)))
+        self.standby_autohide.setText(t("settings.standby_autohide"))
+        for name, check in self.standby_cards.items():
+            check.setText(t({"weather": "standby.weather", "music": "standby.media",
+                             "timer": "standby.timer", "notes": "notes.title"}[name]))
+        for i in range(self.standby_mascot_position.count()):
+            position = self.standby_mascot_position.itemData(i)
+            self.standby_mascot_position.setItemText(i, t("settings.mascot_position." + position))
         self.music_accessory_label.setText(t("settings.music_accessory"))
         for mode, btn in self.weather_preview_buttons.items():
             btn.setText(t("settings.weather_demo." + mode))
@@ -550,7 +695,12 @@ class SettingsDialog(QDialog):
 
     def reject(self) -> None:
         # Cancel and the window close button both undo unsaved mascot changes.
+        changed = self.ctx.config.get("mascot") != self._initial_mascot
         self.ctx.set_mascot(self._initial_mascot, save=False)
+        if changed:
+            # Notes, brightness or alarms may have saved the shared config while
+            # the live character preview was active. Roll that preview back too.
+            self.ctx.config.save()
         self.ctx.preview_emotion(None)
         super().reject()
 
@@ -563,9 +713,27 @@ class SettingsDialog(QDialog):
                                 self.ctx.i18n.t("settings.hotkey_invalid"))
             self.hotkey.setFocus()
             return
+        # This is an explicit, informed opt-in, not a silent power plan change.
+        if self.night_power.isChecked() and not cfg.get("night_power_enabled"):
+            reply = QMessageBox.question(self, self.ctx.i18n.t("night.power_title"),
+                                         self.ctx.i18n.t("night.power_confirm"),
+                                         QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                                         QMessageBox.StandardButton.No)
+            if reply != QMessageBox.StandardButton.Yes:
+                self.night_power.setChecked(False)
         before = cfg.data.copy()
         cfg.data.update({
             "mascot": str(cfg.get("mascot")),
+            "classic_blue_default": self.classic_blue_default.isChecked(),
+            "decorative_animations": self.decorative_animations.isChecked(),
+            "standby_mascot_position": self.standby_mascot_position.currentData(),
+            "animation_intensity": self.animation_intensity.value(),
+            "mascot_scale": self.mascot_scale.value(),
+            "outline_color": self._outline_color,
+            "backlight_brightness": self.backlight_brightness.value(),
+            "standby_profile": self.standby_profile.currentData(),
+            "standby_cards": [name for name, check in self.standby_cards.items() if check.isChecked()],
+            "standby_autohide": self.standby_autohide.isChecked(),
             "emotion": next((name for name, btn in self.emotion_btns.items() if btn.isChecked()), "normal"),
             "music_accessory": self.music_accessory.currentData(),
             "follow_cursor": self.follow_cursor.isChecked(),
@@ -574,6 +742,10 @@ class SettingsDialog(QDialog):
             "widget_visible": [self.widget_list.item(i).data(Qt.ItemDataRole.UserRole) for i in range(self.widget_list.count()) if self.widget_list.item(i).checkState() == Qt.CheckState.Checked],
             "custom_widgets": [self.custom_list.item(i).data(Qt.ItemDataRole.UserRole) for i in range(self.custom_list.count())],
             "standby_enabled": self.standby.isChecked(),
+            "night_auto": self.night_auto.isChecked(),
+            "night_start": self.night_start.time().toString("HH:mm"),
+            "night_end": self.night_end.time().toString("HH:mm"),
+            "night_power_enabled": self.night_power.isChecked(),
             "language": self.language.currentData(),
             "hotkey": shortcut,
             "idle_minutes": self.idle.value(),
@@ -600,3 +772,18 @@ class SettingsDialog(QDialog):
         self.ctx.preview_emotion(None)
         self.ctx.apply_settings()
         self.accept()
+
+    def showEvent(self, event) -> None:
+        super().showEvent(event)
+        self._open_fade.stop()
+        if self.ctx.config.get("decorative_animations") and self.ctx.config.get("animation_intensity") > 0:
+            self._open_fade.setStartValue(0.65)
+            self._open_fade.setEndValue(1.0)
+            self._open_fade.start()
+        else:
+            self.setWindowOpacity(1.0)
+
+    def hideEvent(self, event) -> None:
+        self._open_fade.stop()
+        self.setWindowOpacity(1.0)
+        super().hideEvent(event)

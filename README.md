@@ -1,4 +1,16 @@
-# EyeBar v3.0
+# EyeBar 1.1 — BIG UPDATE
+
+Полное обновление существующего проекта. Начните с [итогового отчёта](REQUIREMENTS_STATUS.md), [изменений](BIG_UPDATE.md) и [инструкции Windows](WINDOWS_CHECKLIST.md).
+
+Проверено130тестов и108вариантов раскладки. EXE требует сборки на Windows; Linuxпроверки не подтверждают нативные WindowsAPI. ClassicBlue выполнен по описанию: старого скриншота нет.
+
+---
+
+# EyeBar v1.1 (развитие последнего одобренного проекта)
+
+**Важное:** это не переписанное приложение. Ветка v1.1 создана на основе последней одобренной сборки EyeBar v3 с быстрыми действиями; прежние компоненты оставлены. Подробности см. [V1_1_RELEASE_NOTES.md](V1_1_RELEASE_NOTES.md).
+
+
 
 Установка и запуск (Windows 10/11, Python 3.10+):
 
@@ -53,7 +65,7 @@ append those command-line flags when building from a `.spec` file.
 Alternatively, for a direct command without the spec:
 
 ```bat
-py -m PyInstaller --clean --noconfirm --onefile --windowed --name EyeBar --add-data "locales;locales" --hidden-import eyebar.mascots.cyber_cat --hidden-import eyebar.mascots.neon_ghost main.py
+py -m PyInstaller --clean --noconfirm --onefile --windowed --name EyeBar --add-data "locales;locales" --hidden-import eyebar.mascots.cyber_cat --hidden-import eyebar.mascots.neon_ghost --hidden-import eyebar.mascots.luna_bunny --hidden-import eyebar.mascots.byte_fox --hidden-import eyebar.mascots.classic_blue main.py
 ```
 
 The direct command does not automatically include optional `assets/` or

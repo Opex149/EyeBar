@@ -65,6 +65,8 @@ def draw_clock_eye(p: QPainter, cx: float, cy: float, w: float, h: float,
     openness = max(0.05, min(st.blink, cap))
 
     p.save()
+    if not st.alert:
+        p.setOpacity(p.opacity() * max(0.1, min(1.0, st.backlight)))
     p.translate(cx, cy)
     p.scale(1.0, openness)
 

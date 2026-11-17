@@ -21,8 +21,8 @@ class TestQuickAccess(unittest.TestCase):
 
     def test_cube_patch_bigger_and_head_original_scale(self):
         text = (ROOT / 'eyebar/mascots/cyber_cat/cat.py').read_text(encoding='utf-8')
-        self.assertIn('(68, 26) if mini else (39, 16)', text)
-        self.assertIn('self._head(p, st, 100, 77, 1.18)', text)
+        self.assertIn('(72, 27) if mini else (39, 16)', text)
+        self.assertIn('self._head(p, st, 100, 77 + 2.4 * st.sleep_phase - 2.0 * st.stretch, 1.18)', text)
         self.assertIn('self._temperature_embroidery(p, st, 100, 134, mini=True)', text)
 
     def test_quick_labels_bilingual(self):

@@ -98,7 +98,14 @@ class CyberCat(Mascot):
         p.setBrush(Qt.BrushStyle.NoBrush)
         p.setPen(QPen(QColor(228, 228, 231, 120), 1.0, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap))
         emo = st.emotion
-        if emo == "sleepy":
+        if st.yawn > 0.06:
+            # A soft opening oval, animated without changing head proportions.
+            p.setBrush(QColor("#08080B"))
+            p.setPen(QPen(QColor(228, 228, 231, 105), 1.0))
+            p.drawEllipse(QPointF(nx, 18.1 + ny), 3.2 + 2.2 * st.yawn,
+                          1.5 + 7.0 * st.yawn)
+            p.setBrush(Qt.BrushStyle.NoBrush)
+        elif emo == "sleepy" or st.sleep_phase > 0.7:
             p.drawEllipse(QPointF(nx, 16.5 + ny), 1.8, 1.4)
         else:
             for sign in (-1, 1):
@@ -171,13 +178,13 @@ class CyberCat(Mascot):
             return
         # In the cube 200 logical pixels are reduced to 138 physical pixels.
         # A 32x13 patch became barely 22x9px: use a genuinely readable badge.
-        w, h = (68, 26) if mini else (39, 16)
+        w, h = (72, 27) if mini else (39, 16)
         rect = QRectF(x - w / 2, y - h / 2, w, h)
         p.setPen(QPen(QColor(125, 211, 252, 225 if mini else 62), 1.6 if mini else 0.8))
         p.setBrush(QColor(16, 36, 51, 238 if mini else 45))
         p.drawRoundedRect(rect, h / 2, h / 2)
         font = QFont("Segoe UI")
-        font.setPixelSize(18 if mini else 11)
+        font.setPixelSize(19 if mini else 11)
         font.setBold(True)
         p.setFont(font)
         p.setPen(QColor("#E0F2FE" if mini else "#7DD3FC"))
@@ -212,10 +219,12 @@ class CyberCat(Mascot):
 
         # Передние лапы опущены вертикально и стоят рядом — это именно сидячая поза.
         for x in (83, 117):
-            self._leg(p, x, 115, 151, 20, False)
+            dx = -3.0 * st.stretch if x < 100 else 3.0 * st.stretch
+            self._leg(p, x + dx, 115 - 3.0 * st.stretch,
+                      151 - 3.0 * st.stretch, 20, False)
 
         # Оригинальная голова 1:1, с теми же щеками, глазами и размером.
-        self._head(p, st, 100, 56, 1.0)
+        self._head(p, st, 100, 56 + 2.4 * st.sleep_phase - 2.0 * st.stretch, 1.0)
 
         # Оригинальный ошейник и индикатор.
         collar = QPainterPath()
@@ -259,12 +268,13 @@ class CyberCat(Mascot):
 
         # Точные координаты и масштаб головы из старого EyeBar.
         # Same original 1.18 head scale; slightly higher to expose the belly badge.
-        self._head(p, st, 100, 77, 1.18)
+        self._head(p, st, 100, 77 + 2.4 * st.sleep_phase - 2.0 * st.stretch, 1.18)
         for x in (72, 128):
+            dx = -3.0 * st.stretch if x < 100 else 3.0 * st.stretch
             paw = QPainterPath()
-            paw.addEllipse(QPointF(x, 139), 16, 8.5)
+            paw.addEllipse(QPointF(x + dx, 139 - 3.0 * st.stretch), 16, 8.5)
             _outlined(p, paw, _grad(130, 148, QColor("#2A2A30"), QColor("#1B1B1F")))
-            self._paw_details(p, x, 139, 0.9)
+            self._paw_details(p, x + dx, 139 - 3.0 * st.stretch, 0.9)
 
         self._temperature_embroidery(p, st, 100, 134, mini=True)
         p.restore()
